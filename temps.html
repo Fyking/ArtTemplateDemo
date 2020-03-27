@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>讲解分离式控件</title>
+		<script src="js/template-web.js"></script>
+		<script src="js/zepto.min.js"></script>
+	</head>
+	<body>
+		<div id="app"></div>
+		<div id="app2"></div>
+		<div id="app3"></div>
+	</body>
+	<script id="test" type="text/html">
+		<style type="text/css">
+		p{
+			background-color: aqua;
+			width: 3rem;
+		}
+		</style>
+		<p>{{mm}}</p>
+	</script>
+	<script id="test2" type="text/html">
+		<style type="text/css">
+		.p{
+			background-color:blueviolet;
+			width: 3rem;
+		}
+		</style>
+		<p class="p">{{mm}}</p>
+	</script>
+	<script type="text/javascript">
+		var html = template("test", {mm:"ABC"});
+		$("#app").html(html);
+		var html = template("test2", {mm:"CVV"});
+		$("#app2").html(html);
+	</script>
+</html>

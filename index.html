@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>讲解基础模板绑定方法</title>
+	</head>
+	
+	<body>
+		<header></header>
+		<div id="app"></div>
+	</body>
+	<!-- 引入模块 -->
+	<script id="tooler" type="text/html">
+		<ul>
+		  {{each ts as v i}}<li>{{v}}</li>{{/each}}
+		</ul>
+	</script>
+	<!-- 控件模块 -->
+	<script id="test" type="text/html">
+		<div>
+		<p>默认转义1 {{title}}</p>
+		<hr />
+		<p>不转义  {{@title}}</p>
+		<!-- <p>不转义  {{#title}}</p> -->
+		<hr />
+		<p>不转义+法  {{@title+":::"+message+"---不存在值"+(a||"无!!!")}}</p>
+		<hr />
+		<p>使用js的if语法  {{if isAdmin}}{{Admin}}{{/if}}</p>
+		<p>使用js的if(三元表达式)语法  {{isAdmin?Admin:'Admin'+"没数据"}}</p>
+		<hr />
+		<p>使用js的each语法第一种  {{each ls as v i}}<br/>第{{i}}个是{{v}}{{/each}}</p>
+		<!-- <p>使用js的each语法第一种  {{each ls as v,i}}<br/>第{{i}}个是{{v}}{{/each}}</p> -->
+		<p>使用js的each语法第三种  {{each ls}}<br/>第{{$index}}个是{{$value}}{{/each}}</p>
+		<hr />
+		<p>自定义函数0/1  {{sex|show}}</p>
+		<p>自定义函数date  {{time|dateFormat:'yyyy-MM-dd HH:mm:ss'}}</p>
+		<hr />
+		{{include 'tooler' as}}
+		</div>
+	</script>
+	<script id="list" type="text/html">
+		<p>使用js的each语法第三种  {{each list}}<br/>第{{$index}}个是{{$value}}{{/each}}</p>
+	</script>
+	<script src="js/template-web.js"></script>
+	<script src="js/zepto.min.js"></script>
+	<script type="text/javascript">
+		//开启压缩
+		template.defaults.minimize = true;
+		//注册自定义函数
+		template.defaults.imports.show = function(sex) {
+			return sex == 0 ? "男" : "女";
+		}
+		//自定义方法
+		template.defaults.imports.dateFormat = function(date, format) {
+			var d =new Date(date);
+			var o={yy:d.getFullYear(),M:d.getMonth()+1,d:d.getDate(),H:d.getHours(),m:d.getMinutes(),s:d.getSeconds()};
+			console.info(o)
+			format=format.replace("yyyy",o.yy).replace("yy",o.yy.toString().substring(2,4)).replace("MM",o.M<10?"0"+o.M.toString():o.M).replace("M",o.M);
+			format=format.replace("dd",o.d<10?"0"+o.d.toString():o.d).replace("d",o.d).replace("HH",o.H<10?"0"+o.H.toString():o.H).replace("H",o.H);
+			format=format.replace("mm",o.m<10?"0"+o.m.toString():o.m).replace("m",o.m).replace("ss",o.s<10?"0"+o.s.toString():o.s).replace("s",o.s);
+			return 	format;
+		};
+		//参数
+		var data = {
+			title: '<h3>Hello World!</h3>',
+			Admin: 'fancy',
+			isAdmin: false,
+			sex: 0,
+			time: "2019/03/09 5:12:1",
+			message: 'how are you!',
+			as: {
+				ts: ['文艺', '博客', '摄影']
+			},
+			ls: ['电影', '民谣', '旅行', '吉他']
+		};
+		var lan={
+			1001:{zh:"你好",en:"Hello"}
+		}
+		console.log(lan["1001"]["zh"])
+		var html = template("test", data);
+		$("#app").html(html);
+		var list= ['电影', '民谣', '旅行', '吉他']
+		$("#app").append(template("list", list));
+	</script>
+</html>
